@@ -1,0 +1,6 @@
+.DS_Store
+*.pyc
+__pycache__/
+
+# Go source folder (local development only)
+go-gui/
