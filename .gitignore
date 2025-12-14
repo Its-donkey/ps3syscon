@@ -2,5 +2,6 @@
 *.pyc
 __pycache__/
 
-# Go source folder (local development only)
-go-gui/
+# Go build artifacts in go-gui (exclude binaries, include source)
+go-gui/ps3syscon-*
+go-gui/*.exe
