@@ -9,19 +9,19 @@ import (
 
 // Custom color palette
 var (
-	colorBackground      = color.RGBA{18, 18, 24, 255}      // Deep dark blue-black
-	colorSurface         = color.RGBA{28, 28, 38, 255}      // Slightly lighter surface
-	colorSurfaceElevated = color.RGBA{38, 38, 52, 255}      // Cards and elevated surfaces
-	colorPrimary         = color.RGBA{0, 212, 255, 255}     // Cyan accent
-	colorPrimaryDark     = color.RGBA{0, 170, 204, 255}     // Darker cyan
-	colorSecondary       = color.RGBA{138, 43, 226, 255}    // Purple accent
-	colorSuccess         = color.RGBA{0, 255, 136, 255}     // Green for success
-	colorWarning         = color.RGBA{255, 170, 0, 255}     // Orange for warnings
-	colorError           = color.RGBA{255, 82, 82, 255}     // Red for errors
-	colorText            = color.RGBA{240, 240, 250, 255}   // Light text
-	colorTextMuted       = color.RGBA{140, 140, 160, 255}   // Muted text
-	colorBorder          = color.RGBA{60, 60, 80, 255}      // Border color
-	colorInputBg         = color.RGBA{22, 22, 32, 255}      // Input background
+	colorBackground      = color.RGBA{18, 18, 24, 255}    // Deep dark blue-black
+	colorSurface         = color.RGBA{28, 28, 38, 255}    // Slightly lighter surface
+	colorSurfaceElevated = color.RGBA{38, 38, 52, 255}    // Cards and elevated surfaces
+	colorPrimary         = color.RGBA{0, 212, 255, 255}   // Cyan accent
+	colorPrimaryDark     = color.RGBA{0, 170, 204, 255}   // Darker cyan
+	colorSecondary       = color.RGBA{138, 43, 226, 255}  // Purple accent
+	colorSuccess         = color.RGBA{0, 255, 136, 255}   // Green for success
+	colorWarning         = color.RGBA{255, 170, 0, 255}   // Orange for warnings
+	colorError           = color.RGBA{255, 82, 82, 255}   // Red for errors
+	colorText            = color.RGBA{240, 240, 250, 255} // Light text
+	colorTextMuted       = color.RGBA{140, 140, 160, 255} // Muted text
+	colorBorder          = color.RGBA{60, 60, 80, 255}    // Border color
+	colorInputBg         = color.RGBA{22, 22, 32, 255}    // Input background
 )
 
 // PS3Theme implements a custom dark theme for the PS3 UART tool.

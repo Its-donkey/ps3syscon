@@ -11,18 +11,18 @@ import (
 
 // MockSerialPort implements SerialPort for testing.
 type MockSerialPort struct {
-	ReadData     []byte
-	ReadErr      error
-	ReadCalls    int
-	WriteData    []byte
-	WriteErr     error
-	WriteCalls   int
-	Closed       bool
-	CloseErr     error
-	ReadTimeout  time.Duration
-	ReadIndex    int
-	ReadChunks   [][]byte
-	ChunkIndex   int
+	ReadData    []byte
+	ReadErr     error
+	ReadCalls   int
+	WriteData   []byte
+	WriteErr    error
+	WriteCalls  int
+	Closed      bool
+	CloseErr    error
+	ReadTimeout time.Duration
+	ReadIndex   int
+	ReadChunks  [][]byte
+	ChunkIndex  int
 	// Responses is a list of complete responses, one per receive() call
 	Responses     []string
 	ResponseIndex int
@@ -693,8 +693,8 @@ func TestAuthCXRFScopenSuccess(t *testing.T) {
 	// Test CXRF auth flow - scopen succeeds but auth1 has no valid data
 	mock := &MockSerialPort{
 		Responses: []string{
-			"SC_READY\r\n",   // scopen response
-			"INVALID\r\n",    // AUTH1 response - no \r to split
+			"SC_READY\r\n", // scopen response
+			"INVALID\r\n",  // AUTH1 response - no \r to split
 		},
 	}
 	uart := NewPS3UARTWithPort(mock, "CXRF", 115200)

@@ -17,7 +17,7 @@ var IconResource = &fyne.StaticResource{
 
 // LogoResource is the full logo for display in the UI (SVG)
 var LogoResource = &fyne.StaticResource{
-	StaticName:    "logo.svg",
+	StaticName: "logo.svg",
 	StaticContent: []byte(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
     <linearGradient id="chipGrad" x1="0%" y1="0%" x2="100%" y2="100%">
