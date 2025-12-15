@@ -50,6 +50,9 @@ go build -o ps3syscon-linux .
 - Built-in serial monitor for diagnostics
 - AES-CBC authentication support
 
+### Documentation
+- **[UART Setup & Command Reference Guide](docs/PS3-Uart-Guide.md)** - Complete guide for hardware setup, wiring, and syscon commands
+
 ---
 
 ## Typical recorded errors (errlog) in the syscon shell:
