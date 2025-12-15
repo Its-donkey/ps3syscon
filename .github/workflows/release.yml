@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.21'
+
+    - name: Install Linux dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc libgl1-mesa-dev xorg-dev
+
+    - name: Install Windows cross-compiler
+      run: sudo apt-get install -y gcc-mingw-w64-x86-64
+
+    - name: Build Linux
+      working-directory: ./go-gui
+      run: CGO_ENABLED=1 go build -o ../ps3syscon-linux .
+
+    - name: Build Windows
+      working-directory: ./go-gui
+      run: CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc GOOS=windows GOARCH=amd64 go build -ldflags="-H windowsgui" -o ../ps3syscon-win.exe .
+
+    - name: Get version
+      id: version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Release ${{ steps.version.outputs.VERSION }}
+        draft: false
+        prerelease: false
+        files: |
+          ps3syscon-linux
+          ps3syscon-win.exe
+        body: |
+          ## PS3 Syscon UART Tool ${{ steps.version.outputs.VERSION }}
+
+          ### Downloads
+          - **Windows**: `ps3syscon-win.exe` - Double-click to run
+          - **Linux**: `ps3syscon-linux` - Run `chmod +x ps3syscon-linux && ./ps3syscon-linux`
+          - **macOS**: Build from source (see README)
+
+          ### Changes
+          See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details.
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

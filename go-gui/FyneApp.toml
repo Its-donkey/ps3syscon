@@ -1,0 +1,6 @@
+[Details]
+Icon = "assets/icon.png"
+Name = "PS3 Syscon UART Tool"
+ID = "com.ps3syscon.uart"
+Version = "1.0.0"
+Build = 1
