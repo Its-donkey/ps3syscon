@@ -1,6 +1,49 @@
+# OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Python
 *.pyc
 __pycache__/
+*.pyo
+*.egg-info/
+dist/
+build/
+.eggs/
 
-# Go source folder (local development only)
-go-gui/
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Build outputs (binaries at root level)
+/ps3syscon-macos
+/ps3syscon-win.exe
+/ps3syscon-linux
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Claude
+.claude/
+
+# Test coverage
+coverage.html
+coverage.out
+*.coverprofile
+
+# Local dev binaries
+go-gui/ps3syscon-gui

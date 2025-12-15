@@ -1,5 +1,12 @@
-# ps3syscon
-PS3 syscon guide and fault finding
+<p align="center">
+  <img src="go-gui/assets/logo.svg" alt="PS3 Syscon UART Tool" width="200">
+</p>
+
+<h1 align="center">PS3 Syscon UART Tool</h1>
+
+<p align="center">
+  <strong>PS3 syscon guide and fault finding</strong>
+</p>
 
 ## Download Pre-built GUI (Recommended)
 
@@ -9,6 +16,7 @@ Download the latest release for your platform - no Python or dependencies requir
 |----------|----------|
 | **Windows (64-bit)** | [ps3syscon-win.exe](ps3syscon-win.exe) |
 | **macOS (64-bit)** | [ps3syscon-macos](ps3syscon-macos) |
+| **Linux (64-bit)** | [Build from source](#linux-build-from-source) |
 
 ### Installation
 
@@ -22,6 +30,18 @@ Download the latest release for your platform - no Python or dependencies requir
 2. Make it executable: `chmod +x ps3syscon-macos`
 3. Run: `./ps3syscon-macos`
 4. If blocked by Gatekeeper, right-click and select "Open"
+
+**Linux (Build from Source):** <a name="linux-build-from-source"></a>
+```bash
+# Install Go 1.21+ and required dependencies
+sudo apt-get install golang gcc libgl1-mesa-dev xorg-dev
+
+# Clone and build
+git clone https://github.com/user/ps3syscon.git
+cd ps3syscon/go-gui
+go build -o ps3syscon-linux .
+./ps3syscon-linux
+```
 
 ### Features
 - Cross-platform GUI for PS3 syscon UART communication

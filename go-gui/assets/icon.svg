@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1C1C26"/>
+      <stop offset="100%" style="stop-color:#12121A"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="256" height="256" rx="40" fill="url(#bg)"/>
+
+  <!-- Outer border -->
+  <rect x="4" y="4" width="248" height="248" rx="38" fill="none" stroke="#00D4FF" stroke-width="3" opacity="0.5"/>
+
+  <!-- Chip body -->
+  <rect x="48" y="48" width="160" height="160" rx="12" fill="#12121A" stroke="#3C3C50" stroke-width="2"/>
+
+  <!-- Chip pins -->
+  <g fill="#00D4FF" filter="url(#glow)">
+    <!-- Top -->
+    <rect x="72" y="36" width="8" height="20" rx="2"/>
+    <rect x="96" y="36" width="8" height="20" rx="2"/>
+    <rect x="152" y="36" width="8" height="20" rx="2"/>
+    <rect x="176" y="36" width="8" height="20" rx="2"/>
+    <!-- Bottom -->
+    <rect x="72" y="200" width="8" height="20" rx="2"/>
+    <rect x="96" y="200" width="8" height="20" rx="2"/>
+    <rect x="152" y="200" width="8" height="20" rx="2"/>
+    <rect x="176" y="200" width="8" height="20" rx="2"/>
+    <!-- Left -->
+    <rect x="36" y="72" width="20" height="8" rx="2"/>
+    <rect x="36" y="96" width="20" height="8" rx="2"/>
+    <rect x="36" y="152" width="20" height="8" rx="2"/>
+    <rect x="36" y="176" width="20" height="8" rx="2"/>
+    <!-- Right -->
+    <rect x="200" y="72" width="20" height="8" rx="2"/>
+    <rect x="200" y="96" width="20" height="8" rx="2"/>
+    <rect x="200" y="152" width="20" height="8" rx="2"/>
+    <rect x="200" y="176" width="20" height="8" rx="2"/>
+  </g>
+
+  <!-- UART waves -->
+  <g stroke="#00D4FF" stroke-width="3" fill="none" filter="url(#glow)">
+    <path d="M 75 108 h 12 v -12 h 12 v 12 h 12 v -12 h 12 v 12 h 12"/>
+    <path d="M 181 148 h -12 v 12 h -12 v -12 h -12 v 12 h -12 v -12 h -12"/>
+  </g>
+
+  <!-- PS3 text -->
+  <text x="128" y="138" fill="#00D4FF" font-family="Arial, sans-serif" font-size="28" font-weight="bold" text-anchor="middle" filter="url(#glow)">PS3</text>
+
+  <!-- SC text -->
+  <text x="128" y="178" fill="#8C8CA0" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle">PS3 Syscon</text>
+
+  <!-- Status LED -->
+  <circle cx="80" cy="188" r="5" fill="#00FF88" filter="url(#glow)"/>
+</svg>
