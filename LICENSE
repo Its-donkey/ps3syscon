@@ -1,16 +1,46 @@
-MIT License
+PS3 Syscon UART Tool - Personal Use License
 
-Copyright (c) 2024 Its-donkey
+Copyright (c) 2025 Jeffrey Shapiro
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+TERMS AND CONDITIONS
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. DEFINITIONS
+
+"Software" refers to the PS3 Syscon UART Tool, including all source code,
+binaries, documentation, and associated files.
+
+"Personal Use" means use by an individual for non-commercial purposes,
+including hobbyist projects, education, research, and personal repair work.
+
+"Commercial Use" means any use of the Software for commercial advantage or
+monetary compensation, including but not limited to:
+- Use in a business or commercial enterprise
+- Use in products or services offered for sale
+- Use by repair shops or commercial repair services
+- Redistribution as part of a commercial product
+
+2. GRANT OF LICENSE
+
+Personal Use: Permission is hereby granted, free of charge, to any individual
+to use, copy, modify, and distribute the Software for Personal Use only,
+subject to the following conditions:
+
+- The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+- Attribution to the original author (Jeffrey Shapiro) must be maintained.
+
+Commercial Use: Commercial Use of this Software requires a separate commercial
+license. To obtain a commercial license, please contact the copyright holder.
+
+3. RESTRICTIONS
+
+You may NOT:
+- Use the Software for Commercial Use without obtaining a commercial license
+- Remove or alter any copyright notices or license terms
+- Sublicense or sell the Software without authorization
+- Misrepresent the origin of the Software
+
+4. DISCLAIMER
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -19,3 +49,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+5. TERMINATION
+
+This license automatically terminates if you violate any of its terms. Upon
+termination, you must destroy all copies of the Software in your possession.
+
+For commercial licensing inquiries, please open an issue on the project
+repository or contact the copyright holder directly.
