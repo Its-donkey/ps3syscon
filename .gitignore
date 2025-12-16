@@ -17,6 +17,11 @@ certificate/
 *.test
 *.out
 
+# Allow pre-built binaries
+!ps3syscon-win.exe
+!ps3syscon-macos
+!ps3syscon-linux
+
 # IDE
 .idea/
 .vscode/
