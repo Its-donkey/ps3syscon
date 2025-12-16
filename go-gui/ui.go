@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/url"
 	"strings"
 	"time"
 
@@ -12,6 +13,13 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 	"go.bug.st/serial"
+)
+
+const (
+	AppVersion = "1.2.0"
+	AppAuthor  = "Jeffrey Shapiro"
+	AppEmail   = "itsme@jeffshapiro.com.au"
+	AppRepo    = "https://github.com/Its-donkey/ps3syscon"
 )
 
 // createCard creates a card-like container with a title and content.
@@ -402,32 +410,57 @@ func createMainWindow(myApp fyne.App, myWindow fyne.Window) fyne.CanvasObject {
 		outputText.SetText(outputText.Text + fmt.Sprintf("[%s] > AUTH\n%s\n", timestamp, result))
 	}
 
-	// Help function
-	showHelp := func() {
-		helpText := `QUICK START
-1. Select serial port and click Authenticate
-2. Use dropdowns to build commands
+	// About function
+	showAbout := func() {
+		aboutTitle := canvas.NewText("PS3 Syscon UART Tool", colorPrimary)
+		aboutTitle.TextSize = 18
+		aboutTitle.TextStyle = fyne.TextStyle{Bold: true}
+		aboutTitle.Alignment = fyne.TextAlignCenter
 
-CXR MODE - Common Commands
-  EEP GET <addr> <len>    Read EEPROM
-  EEP SET <addr> <len> <val>  Write EEPROM
-  ERRLOG GET <00-1F>      Read error log
-  ERRLOG CLEAR            Clear errors
-  VER                     Firmware version
+		versionText := widget.NewLabel(fmt.Sprintf("Version %s", AppVersion))
+		versionText.Alignment = fyne.TextAlignCenter
 
-CXRF MODE - Common Commands
-  r <offset> [len]        Read from syscon
-  w <offset> <value>      Write to syscon
-  errlog / clearerrlog    Error log ops
-  eepcsum                 Verify checksum
-  version                 SC firmware ver
+		authorText := widget.NewLabel(fmt.Sprintf("Author: %s", AppAuthor))
+		authorText.Alignment = fyne.TextAlignCenter
+
+		emailLink, _ := url.Parse("mailto:" + AppEmail)
+		emailHyperlink := widget.NewHyperlink(AppEmail, emailLink)
+
+		repoLink, _ := url.Parse(AppRepo)
+		repoHyperlink := widget.NewHyperlink("GitHub Repository", repoLink)
+
+		descText := widget.NewLabel("A cross-platform GUI tool for communicating with\nPS3 Syscon via UART interface.")
+		descText.Alignment = fyne.TextAlignCenter
+		descText.Wrapping = fyne.TextWrapWord
+
+		helpText := widget.NewLabel(`QUICK REFERENCE
+
+CXR MODE - External Commands (57600 baud)
+  EEP GET/SET, ERRLOG, VER, AUTH
+
+CXRF MODE - Internal Commands (115200 baud)
+  r/w, errlog, eepcsum, version
+  Requires DIAG pin grounded
 
 TIPS
-• Press Enter to send command
-• CXRF requires DIAG pin grounded
-• Auth is required before commands`
+  Press Enter to send command
+  Auth is required before commands`)
+		helpText.Wrapping = fyne.TextWrapWord
 
-		dialog.ShowInformation("Quick Reference", helpText, myWindow)
+		content := container.NewVBox(
+			aboutTitle,
+			versionText,
+			widget.NewSeparator(),
+			authorText,
+			container.NewCenter(emailHyperlink),
+			container.NewCenter(repoHyperlink),
+			widget.NewSeparator(),
+			descText,
+			widget.NewSeparator(),
+			helpText,
+		)
+
+		dialog.ShowCustom("About", "Close", container.NewPadded(content), myWindow)
 	}
 
 	// Action buttons
@@ -436,8 +469,8 @@ TIPS
 
 	authBtn := widget.NewButton("Authenticate", authCmd)
 
-	helpBtn := widget.NewButton("Help", showHelp)
-	helpBtn.Importance = widget.LowImportance
+	aboutBtn := widget.NewButton("About", showAbout)
+	aboutBtn.Importance = widget.LowImportance
 
 	monitorBtn := widget.NewButton("Serial Monitor", func() {
 		openSerialMonitor(myApp, portSelect.Selected, scTypeSelect.Selected)
@@ -445,7 +478,7 @@ TIPS
 	monitorBtn.Importance = widget.LowImportance
 
 	// Button layout
-	actionButtons := container.NewGridWithColumns(4, sendBtn, authBtn, monitorBtn, helpBtn)
+	actionButtons := container.NewGridWithColumns(4, sendBtn, authBtn, monitorBtn, aboutBtn)
 
 	// Toggle visibility based on SC type
 	scTypeSelect.OnChanged = func(scType string) {
@@ -639,4 +672,61 @@ func openSerialMonitor(myApp fyne.App, defaultPort, scType string) {
 	bg := canvas.NewRectangle(colorBackground)
 	monitorWindow.SetContent(container.NewStack(bg, content))
 	monitorWindow.Show()
+}
+
+// showDisclaimer displays a disclaimer dialog that must be accepted to proceed.
+// Returns true if accepted, false if declined.
+func showDisclaimer(myWindow fyne.Window) bool {
+	accepted := make(chan bool)
+
+	disclaimerText := `DISCLAIMER AND LIMITATION OF LIABILITY
+
+This software is provided "AS IS" without warranty of any kind, either expressed or implied, including but not limited to the implied warranties of merchantability, fitness for a particular purpose, or non-infringement.
+
+By using this software, you acknowledge and agree that:
+
+1. ASSUMPTION OF RISK: You assume all risks associated with modifying your PlayStation 3 hardware. This includes but is not limited to permanent damage to the motherboard, SYSCON, EEPROM, or other components.
+
+2. NO WARRANTY: The author makes no representations or warranties regarding the accuracy, completeness, or suitability of this software. Hardware modification carries inherent risks that cannot be fully anticipated.
+
+3. LIMITATION OF LIABILITY: In no event shall the author be liable for any direct, indirect, incidental, special, exemplary, or consequential damages however caused.
+
+4. EXPERTISE REQUIRED: This software requires soldering skills and knowledge of electronics. Improper connections can result in damage to your PS3 or USB serial adapter.
+
+5. BACKUP RESPONSIBILITY: You are solely responsible for backing up any data before proceeding.
+
+BY CLICKING "ACCEPT", YOU ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTOOD, AND AGREED TO THIS DISCLAIMER.`
+
+	textWidget := widget.NewLabel(disclaimerText)
+	textWidget.Wrapping = fyne.TextWrapWord
+
+	scroll := container.NewVScroll(textWidget)
+	scroll.SetMinSize(fyne.NewSize(500, 300))
+
+	content := container.NewVBox(
+		scroll,
+	)
+
+	acceptBtn := widget.NewButton("Accept", func() {
+		accepted <- true
+	})
+	acceptBtn.Importance = widget.HighImportance
+
+	declineBtn := widget.NewButton("Decline", func() {
+		accepted <- false
+	})
+	declineBtn.Importance = widget.DangerImportance
+
+	buttons := container.NewGridWithColumns(2, declineBtn, acceptBtn)
+
+	d := dialog.NewCustomWithoutButtons("Terms of Use", container.NewBorder(nil, buttons, nil, nil, content), myWindow)
+	d.SetOnClosed(func() {
+		select {
+		case accepted <- false:
+		default:
+		}
+	})
+	d.Show()
+
+	return <-accepted
 }
