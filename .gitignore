@@ -6,15 +6,7 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-
-# Python
-*.pyc
-__pycache__/
-*.pyo
-*.egg-info/
-dist/
-build/
-.eggs/
+certificate/
 
 # Go
 *.exe
@@ -45,5 +37,3 @@ coverage.html
 coverage.out
 *.coverprofile
 
-# Local dev binaries
-go-gui/ps3syscon-gui
