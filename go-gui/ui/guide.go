@@ -24,8 +24,8 @@ func ShowGuideWindow(myApp fyne.App) {
 	title.TextSize = 20
 	title.TextStyle = fyne.TextStyle{Bold: true}
 
-	motherbaords := canvas.NewText("Supported PS3 Motherbaordssssss", theme.Color(FTText))
-	motherbaords.TextSize = 14
+	// motherbaords := canvas.NewText("Supported PS3 Motherbaords", theme.Color(FTText))
+	// motherbaords.TextSize = 14
 
 	// Guide text in a scrollable container
 	guideText := widget.NewLabel(guideContent)
@@ -37,7 +37,7 @@ func ShowGuideWindow(myApp fyne.App) {
 		container.NewVBox(
 			container.NewCenter(title),
 			widget.NewSeparator(),
-			motherbaords,
+			// motherbaords,
 		),
 		nil, nil, nil,
 		scroll,
