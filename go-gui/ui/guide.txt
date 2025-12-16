@@ -1,5 +1,5 @@
 PS3 SYSCON DIAGNOSTIC TOOL
-UART Interface Setup & Command Reference (V3)
+UART Interface Setup & Command Reference
 
 ════════════════════════════════════════════════════════════════════════════════
 

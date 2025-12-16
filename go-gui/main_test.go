@@ -8,6 +8,21 @@ import (
 	"fyne.io/fyne/v2/test"
 )
 
+func testWindowDeps() ui.WindowDeps {
+	return ui.WindowDeps{
+		LogoResource:        LogoResource,
+		GetSerialPorts:      getSerialPorts,
+		GetCommandNames:     GetCommandNames,
+		GetCXRFCommandNames: GetCXRFCommandNames,
+		GetCommand:          adaptCommand,
+		GetCXRFCommand:      adaptCXRFCommand,
+		SendCommand:         sendCommand,
+		Authenticate:        authenticate,
+		OpenSerialMonitor:   openSerialMonitor,
+		ShowGuideWindow:     ui.ShowGuideWindow,
+	}
+}
+
 // TestMainAppInitialization tests that the app can be created and initialized
 // without panicking. This provides coverage for the app initialization code path.
 func TestMainAppInitialization(t *testing.T) {
