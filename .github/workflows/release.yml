@@ -86,7 +86,7 @@ jobs:
       env:
         APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
       run: |
-        codesign --force --options runtime --sign "Developer ID Application: Jeffrey Bencteux ($APPLE_TEAM_ID)" ps3syscon-macos
+        codesign --force --options runtime --sign "Developer ID Application: Jeffrey Shapiro ($APPLE_TEAM_ID)" ps3syscon-macos
         # Verify signature
         codesign --verify --verbose ps3syscon-macos
 
