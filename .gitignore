@@ -17,12 +17,6 @@ certificate/
 *.test
 *.out
 
-# Built binaries
-ps3syscon-linux
-ps3syscon-macos
-ps3syscon-win.exe
-
-
 # IDE
 .idea/
 .vscode/
