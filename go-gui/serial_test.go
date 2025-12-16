@@ -563,9 +563,9 @@ func TestAuthCXRSuccess(t *testing.T) {
 	}
 	uart := NewPS3UARTWithPort(mock, "CXR", 57600)
 
-	result := uart.Auth()
-	if result != "Auth successful" {
-		t.Errorf("Expected 'Auth successful', got %q", result)
+	err := uart.Auth()
+	if err != nil {
+		t.Errorf("Expected successful auth, got error: %v", err)
 	}
 }
 
@@ -581,9 +581,9 @@ func TestAuthCXRInvalidAuth1Response(t *testing.T) {
 	mock := &MockSerialPort{ReadData: []byte(fmt.Sprintf("R:%02X:%s\r\n", cs, resp))}
 	uart := NewPS3UARTWithPort(mock, "CXR", 57600)
 
-	result := uart.Auth()
-	if result != "Auth1 response invalid" {
-		t.Errorf("Expected 'Auth1 response invalid', got %q", result)
+	err := uart.Auth()
+	if err == nil {
+		t.Error("Expected error for invalid AUTH1 response")
 	}
 }
 
@@ -598,9 +598,9 @@ func TestAuthCXREmptyAuth1Data(t *testing.T) {
 	mock := &MockSerialPort{ReadData: []byte(fmt.Sprintf("R:%02X:%s\r\n", cs, resp))}
 	uart := NewPS3UARTWithPort(mock, "CXR", 57600)
 
-	result := uart.Auth()
-	if result != "Auth1 response invalid" {
-		t.Errorf("Expected 'Auth1 response invalid', got %q", result)
+	err := uart.Auth()
+	if err == nil {
+		t.Error("Expected error for empty AUTH1 data")
 	}
 }
 
@@ -615,9 +615,9 @@ func TestAuthCXRInvalidHexDecode(t *testing.T) {
 	mock := &MockSerialPort{ReadData: []byte(fmt.Sprintf("R:%02X:%s\r\n", cs, resp))}
 	uart := NewPS3UARTWithPort(mock, "CXR", 57600)
 
-	result := uart.Auth()
-	if result != "Auth1 response decode error" {
-		t.Errorf("Expected 'Auth1 response decode error', got %q", result)
+	err := uart.Auth()
+	if err == nil {
+		t.Error("Expected error for invalid hex decode")
 	}
 }
 
@@ -633,9 +633,9 @@ func TestAuthCXRShortAuth1Response(t *testing.T) {
 	mock := &MockSerialPort{ReadData: []byte(fmt.Sprintf("R:%02X:%s\r\n", cs, resp))}
 	uart := NewPS3UARTWithPort(mock, "CXR", 57600)
 
-	result := uart.Auth()
-	if result != "Auth1 response header invalid" {
-		t.Errorf("Expected 'Auth1 response header invalid', got %q", result)
+	err := uart.Auth()
+	if err == nil {
+		t.Error("Expected error for short AUTH1 response")
 	}
 }
 
@@ -652,9 +652,9 @@ func TestAuthCXRInvalidHeader(t *testing.T) {
 	mock := &MockSerialPort{ReadData: []byte(fmt.Sprintf("R:%02X:%s\r\n", cs, resp))}
 	uart := NewPS3UARTWithPort(mock, "CXR", 57600)
 
-	result := uart.Auth()
-	if result != "Auth1 response header invalid" {
-		t.Errorf("Expected 'Auth1 response header invalid', got %q", result)
+	err := uart.Auth()
+	if err == nil {
+		t.Error("Expected error for invalid AUTH1 header")
 	}
 }
 
@@ -673,9 +673,9 @@ func TestAuthCXRInvalidDecryptedBody(t *testing.T) {
 	mock := &MockSerialPort{ReadData: []byte(fmt.Sprintf("R:%02X:%s\r\n", cs, resp))}
 	uart := NewPS3UARTWithPort(mock, "CXR", 57600)
 
-	result := uart.Auth()
-	if result != "Auth1 response body invalid" {
-		t.Errorf("Expected 'Auth1 response body invalid', got %q", result)
+	err := uart.Auth()
+	if err == nil {
+		t.Error("Expected error for invalid decrypted body")
 	}
 }
 
@@ -683,9 +683,9 @@ func TestAuthCXRFScopenFails(t *testing.T) {
 	mock := &MockSerialPort{ReadData: []byte("ERROR\r\n")}
 	uart := NewPS3UARTWithPort(mock, "CXRF", 115200)
 
-	result := uart.Auth()
-	if result != "scopen response invalid" {
-		t.Errorf("Expected 'scopen response invalid', got %q", result)
+	err := uart.Auth()
+	if err == nil {
+		t.Error("Expected error for scopen failure")
 	}
 }
 
@@ -699,10 +699,10 @@ func TestAuthCXRFScopenSuccess(t *testing.T) {
 	}
 	uart := NewPS3UARTWithPort(mock, "CXRF", 115200)
 
-	result := uart.Auth()
+	err := uart.Auth()
 	// Should fail at parsing auth1 response
-	if result != "scopen response invalid" {
-		t.Logf("CXRF auth result: %s", result)
+	if err == nil {
+		t.Error("Expected error for invalid AUTH1 response format")
 	}
 }
 
@@ -716,9 +716,9 @@ func TestAuthCXRFEmptyAuth1Data(t *testing.T) {
 	}
 	uart := NewPS3UARTWithPort(mock, "CXRF", 115200)
 
-	result := uart.Auth()
-	if result != "scopen response invalid" {
-		t.Logf("CXRF empty auth1 result: %s", result)
+	err := uart.Auth()
+	if err == nil {
+		t.Error("Expected error for empty AUTH1 data")
 	}
 }
 
@@ -747,9 +747,9 @@ func TestAuthCXRFValidAuth1(t *testing.T) {
 	}
 	uart := NewPS3UARTWithPort(mock, "CXRF", 115200)
 
-	result := uart.Auth()
-	if result != "Auth successful" {
-		t.Errorf("Expected 'Auth successful', got %q", result)
+	err := uart.Auth()
+	if err != nil {
+		t.Errorf("Expected successful auth, got error: %v", err)
 	}
 }
 
@@ -762,9 +762,9 @@ func TestAuthCXRFInvalidAuth1Hex(t *testing.T) {
 	}
 	uart := NewPS3UARTWithPort(mock, "CXRF", 115200)
 
-	result := uart.Auth()
-	if result != "Auth1 response invalid" {
-		t.Errorf("Expected 'Auth1 response invalid', got %q", result)
+	err := uart.Auth()
+	if err == nil {
+		t.Error("Expected error for invalid AUTH1 hex")
 	}
 }
 
@@ -779,9 +779,9 @@ func TestAuthCXRFInvalidAuth1Header(t *testing.T) {
 	}
 	uart := NewPS3UARTWithPort(mock, "CXRF", 115200)
 
-	result := uart.Auth()
-	if result != "Auth1 response header invalid" {
-		t.Errorf("Expected 'Auth1 response header invalid', got %q", result)
+	err := uart.Auth()
+	if err == nil {
+		t.Error("Expected error for invalid AUTH1 header")
 	}
 }
 
@@ -798,9 +798,9 @@ func TestAuthCXRFInvalidAuth1Body(t *testing.T) {
 	}
 	uart := NewPS3UARTWithPort(mock, "CXRF", 115200)
 
-	result := uart.Auth()
-	if result != "Auth1 response body invalid" {
-		t.Errorf("Expected 'Auth1 response body invalid', got %q", result)
+	err := uart.Auth()
+	if err == nil {
+		t.Error("Expected error for invalid AUTH1 body")
 	}
 }
 
@@ -825,9 +825,9 @@ func TestAuthCXRFAuth2Fails(t *testing.T) {
 	}
 	uart := NewPS3UARTWithPort(mock, "CXRF", 115200)
 
-	result := uart.Auth()
-	if result != "Auth failed" {
-		t.Errorf("Expected 'Auth failed', got %q", result)
+	err := uart.Auth()
+	if err == nil {
+		t.Error("Expected error for AUTH2 failure")
 	}
 }
 
@@ -842,9 +842,13 @@ func TestAuthSWMode(t *testing.T) {
 	mock := &MockSerialPort{ReadData: []byte(fmt.Sprintf("%s:%02X\n", resp, cs))}
 	uart := NewPS3UARTWithPort(mock, "SW", 57600)
 
-	result := uart.Auth()
+	err := uart.Auth()
 	// Will fail due to invalid response but exercises SW path
-	t.Logf("SW auth result: %s", result)
+	if err == nil {
+		t.Logf("SW auth unexpectedly succeeded")
+	} else {
+		t.Logf("SW auth error (expected): %v", err)
+	}
 }
 
 func TestGetSerialPorts(t *testing.T) {
@@ -884,10 +888,12 @@ func TestAuthDecryptionError(t *testing.T) {
 	mock := &MockSerialPort{ReadData: []byte(fmt.Sprintf("R:%02X:%s\r\n", cs, respPart))}
 	uart := NewPS3UARTWithPort(mock, "CXR", 57600)
 
-	result := uart.Auth()
+	err := uart.Auth()
 	// Should fail at body validation since decrypted data won't match expected pattern
-	if result != "Auth1 response body invalid" {
-		t.Logf("Decryption test result: %s", result)
+	if err == nil {
+		t.Error("Expected error for decryption/body validation failure")
+	} else {
+		t.Logf("Decryption test error (expected): %v", err)
 	}
 }
 
@@ -929,8 +935,8 @@ func TestAuthCXRAuth2Fails(t *testing.T) {
 	}
 	uart := NewPS3UARTWithPort(mock, "CXR", 57600)
 
-	result := uart.Auth()
-	if result != "Auth failed" {
-		t.Errorf("Expected 'Auth failed', got %q", result)
+	err := uart.Auth()
+	if err == nil {
+		t.Error("Expected error for AUTH2 failure")
 	}
 }

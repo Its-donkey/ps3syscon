@@ -17,10 +17,6 @@ certificate/
 *.test
 *.out
 
-# Build outputs (binaries at root level)
-/ps3syscon-macos
-/ps3syscon-win.exe
-/ps3syscon-linux
 
 # IDE
 .idea/

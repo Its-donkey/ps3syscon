@@ -1,6 +1,7 @@
 package main
 
 import (
+	"ps3syscon-gui/ui"
 	"testing"
 
 	"fyne.io/fyne/v2"
@@ -54,15 +55,15 @@ func TestFilterOptions(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := filterOptions(options, tt.search)
+			result := ui.FilterOptions(options, tt.search)
 			if len(result) != len(tt.expected) {
-				t.Errorf("filterOptions(%v, %q) returned %d items, want %d",
+				t.Errorf("FilterOptions(%v, %q) returned %d items, want %d",
 					options, tt.search, len(result), len(tt.expected))
 				return
 			}
 			for i, v := range result {
 				if v != tt.expected[i] {
-					t.Errorf("filterOptions result[%d] = %q, want %q", i, v, tt.expected[i])
+					t.Errorf("FilterOptions result[%d] = %q, want %q", i, v, tt.expected[i])
 				}
 			}
 		})
@@ -71,23 +72,23 @@ func TestFilterOptions(t *testing.T) {
 
 func TestFilterOptionsEmptyInput(t *testing.T) {
 	var emptyOptions []string
-	result := filterOptions(emptyOptions, "test")
+	result := ui.FilterOptions(emptyOptions, "test")
 	if len(result) != 0 {
-		t.Errorf("filterOptions with empty input returned %d items, want 0", len(result))
+		t.Errorf("FilterOptions with empty input returned %d items, want 0", len(result))
 	}
 }
 
 func TestFilterOptionsNilInput(t *testing.T) {
-	result := filterOptions(nil, "test")
+	result := ui.FilterOptions(nil, "test")
 	if result != nil {
-		t.Errorf("filterOptions with nil input returned %v, want nil", result)
+		t.Errorf("FilterOptions with nil input returned %v, want nil", result)
 	}
 }
 
 func TestCreateHeader(t *testing.T) {
-	header := createHeader()
+	header := ui.CreateHeader(LogoResource)
 	if header == nil {
-		t.Fatal("createHeader returned nil")
+		t.Fatal("CreateHeader returned nil")
 	}
 
 	// Verify it's a container
@@ -103,6 +104,21 @@ func TestCreateHeader(t *testing.T) {
 	}
 }
 
+func testWindowDeps() ui.WindowDeps {
+	return ui.WindowDeps{
+		LogoResource:        LogoResource,
+		GetSerialPorts:      getSerialPorts,
+		GetCommandNames:     GetCommandNames,
+		GetCXRFCommandNames: GetCXRFCommandNames,
+		GetCommand:          adaptCommand,
+		GetCXRFCommand:      adaptCXRFCommand,
+		SendCommand:         sendCommand,
+		Authenticate:        authenticate,
+		OpenSerialMonitor:   openSerialMonitor,
+		ShowGuideWindow:     showGuideWindow,
+	}
+}
+
 func TestCreateMainWindow(t *testing.T) {
 	// Create a test app and window
 	app := test.NewApp()
@@ -111,9 +127,9 @@ func TestCreateMainWindow(t *testing.T) {
 	window := app.NewWindow("Test")
 	window.Resize(fyne.NewSize(600, 500))
 
-	content := createMainWindow(app, window)
+	content := ui.CreateMainWindow(app, window, testWindowDeps())
 	if content == nil {
-		t.Fatal("createMainWindow returned nil")
+		t.Fatal("CreateMainWindow returned nil")
 	}
 
 	// Set content and verify it renders without panic
@@ -147,7 +163,7 @@ func TestCreateMainWindowInteraction(t *testing.T) {
 	window := app.NewWindow("Test")
 	window.Resize(fyne.NewSize(600, 500))
 
-	content := createMainWindow(app, window)
+	content := ui.CreateMainWindow(app, window, testWindowDeps())
 	window.SetContent(content)
 
 	// Force a layout/render cycle
@@ -161,7 +177,7 @@ func TestCreateMainWindowSCTypeSwitch(t *testing.T) {
 	window := app.NewWindow("Test")
 	window.Resize(fyne.NewSize(600, 500))
 
-	content := createMainWindow(app, window)
+	content := ui.CreateMainWindow(app, window, testWindowDeps())
 	window.SetContent(content)
 
 	// The content should be rendered without errors
@@ -200,15 +216,15 @@ func TestFilterOptionsSpecialCharacters(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := filterOptions(options, tt.search)
+			result := ui.FilterOptions(options, tt.search)
 			if len(result) != len(tt.expected) {
-				t.Errorf("filterOptions(%v, %q) returned %d items, want %d",
+				t.Errorf("FilterOptions(%v, %q) returned %d items, want %d",
 					options, tt.search, len(result), len(tt.expected))
 				return
 			}
 			for i, v := range result {
 				if v != tt.expected[i] {
-					t.Errorf("filterOptions result[%d] = %q, want %q", i, v, tt.expected[i])
+					t.Errorf("FilterOptions result[%d] = %q, want %q", i, v, tt.expected[i])
 				}
 			}
 		})
@@ -216,9 +232,9 @@ func TestFilterOptionsSpecialCharacters(t *testing.T) {
 }
 
 func TestCreateHeaderContent(t *testing.T) {
-	header := createHeader()
+	header := ui.CreateHeader(LogoResource)
 	if header == nil {
-		t.Fatal("createHeader returned nil")
+		t.Fatal("CreateHeader returned nil")
 	}
 
 	// Verify it renders without panic
@@ -257,7 +273,7 @@ func TestCreateMainWindowWithAllSCTypes(t *testing.T) {
 	window := app.NewWindow("Test")
 	window.Resize(fyne.NewSize(600, 500))
 
-	content := createMainWindow(app, window)
+	content := ui.CreateMainWindow(app, window, testWindowDeps())
 	window.SetContent(content)
 
 	// Trigger layout and refresh
@@ -268,13 +284,13 @@ func TestFilterOptionsEdgeCases(t *testing.T) {
 	options := []string{"TEST1", "TEST2", "OTHER"}
 
 	// Test with whitespace
-	result := filterOptions(options, "  ")
+	result := ui.FilterOptions(options, "  ")
 	if len(result) != 0 {
 		t.Errorf("Expected 0 results for whitespace search, got %d", len(result))
 	}
 
 	// Test case insensitivity
-	result = filterOptions(options, "test")
+	result = ui.FilterOptions(options, "test")
 	if len(result) != 2 {
 		t.Errorf("Expected 2 results for 'test' search, got %d", len(result))
 	}
@@ -341,9 +357,9 @@ func TestBuildCXRCommand(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := buildCXRCommand(tt.cmd, tt.subCmd, tt.args)
+			result := ui.BuildCXRCommand(tt.cmd, tt.subCmd, tt.args)
 			if result != tt.expected {
-				t.Errorf("buildCXRCommand(%q, %q, %q) = %q, want %q",
+				t.Errorf("BuildCXRCommand(%q, %q, %q) = %q, want %q",
 					tt.cmd, tt.subCmd, tt.args, result, tt.expected)
 			}
 		})
@@ -364,9 +380,9 @@ func TestGetSerialSpeed(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.scType, func(t *testing.T) {
-			result := getSerialSpeed(tt.scType)
+			result := ui.GetSerialSpeed(tt.scType)
 			if result != tt.expected {
-				t.Errorf("getSerialSpeed(%q) = %d, want %d", tt.scType, result, tt.expected)
+				t.Errorf("GetSerialSpeed(%q) = %d, want %d", tt.scType, result, tt.expected)
 			}
 		})
 	}
@@ -376,58 +392,58 @@ func TestFormatCommandOutput(t *testing.T) {
 	tests := []struct {
 		name     string
 		scType   string
-		result   CommandResult
+		result   ui.CommandResult
 		expected string
 	}{
 		{
 			name:     "CXR mode",
 			scType:   "CXR",
-			result:   CommandResult{Code: 0, Data: []string{"DATA1", "DATA2"}},
+			result:   ui.CommandResult{Code: 0, Data: []string{"DATA1", "DATA2"}},
 			expected: "00000000 DATA1 DATA2",
 		},
 		{
 			name:     "CXR mode with code",
 			scType:   "CXR",
-			result:   CommandResult{Code: 0x12345678, Data: []string{"VALUE"}},
+			result:   ui.CommandResult{Code: 0x12345678, Data: []string{"VALUE"}},
 			expected: "12345678 VALUE",
 		},
 		{
 			name:     "SW mode single line",
 			scType:   "SW",
-			result:   CommandResult{Code: 0, Data: []string{"DATA"}},
+			result:   ui.CommandResult{Code: 0, Data: []string{"DATA"}},
 			expected: "00000000 DATA",
 		},
 		{
 			name:     "SW mode multiline",
 			scType:   "SW",
-			result:   CommandResult{Code: 0, Data: []string{"LINE1\nLINE2"}},
+			result:   ui.CommandResult{Code: 0, Data: []string{"LINE1\nLINE2"}},
 			expected: "00000000\nLINE1\nLINE2",
 		},
 		{
 			name:     "CXRF mode with data",
 			scType:   "CXRF",
-			result:   CommandResult{Code: 0, Data: []string{"SC_READY"}},
+			result:   ui.CommandResult{Code: 0, Data: []string{"SC_READY"}},
 			expected: "SC_READY",
 		},
 		{
 			name:     "CXRF mode empty data",
 			scType:   "CXRF",
-			result:   CommandResult{Code: 0, Data: []string{}},
+			result:   ui.CommandResult{Code: 0, Data: []string{}},
 			expected: "",
 		},
 		{
 			name:     "Unknown mode with data",
 			scType:   "UNKNOWN",
-			result:   CommandResult{Code: 0, Data: []string{"RESPONSE"}},
+			result:   ui.CommandResult{Code: 0, Data: []string{"RESPONSE"}},
 			expected: "RESPONSE",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := formatCommandOutput(tt.scType, tt.result)
+			result := ui.FormatCommandOutput(tt.scType, tt.result)
 			if result != tt.expected {
-				t.Errorf("formatCommandOutput(%q, %v) = %q, want %q",
+				t.Errorf("FormatCommandOutput(%q, %v) = %q, want %q",
 					tt.scType, tt.result, result, tt.expected)
 			}
 		})
