@@ -1,6 +1,7 @@
 package main
 
 import (
+	"ps3syscon-gui/ui"
 	"testing"
 
 	"fyne.io/fyne/v2"
@@ -24,9 +25,9 @@ func TestMainAppInitialization(t *testing.T) {
 
 	window.Resize(fyne.NewSize(600, 500))
 
-	content := createMainWindow(app, window)
+	content := ui.CreateMainWindow(app, window, testWindowDeps())
 	if content == nil {
-		t.Fatal("createMainWindow returned nil")
+		t.Fatal("CreateMainWindow returned nil")
 	}
 
 	window.SetContent(content)
@@ -68,7 +69,7 @@ func TestWindowContent(t *testing.T) {
 	defer app.Quit()
 
 	window := app.NewWindow("Test Window")
-	content := createMainWindow(app, window)
+	content := ui.CreateMainWindow(app, window, testWindowDeps())
 
 	window.SetContent(content)
 
@@ -89,7 +90,7 @@ func TestMultipleWindows(t *testing.T) {
 	// Create main window
 	mainWindow := app.NewWindow("PS3UART GUI")
 	mainWindow.Resize(fyne.NewSize(600, 500))
-	mainWindow.SetContent(createMainWindow(app, mainWindow))
+	mainWindow.SetContent(ui.CreateMainWindow(app, mainWindow, testWindowDeps()))
 
 	// Open serial monitor window
 	openSerialMonitor(app, "", "CXR")
@@ -104,7 +105,7 @@ func TestWindowResize(t *testing.T) {
 	defer app.Quit()
 
 	window := app.NewWindow("Test")
-	window.SetContent(createMainWindow(app, window))
+	window.SetContent(ui.CreateMainWindow(app, window, testWindowDeps()))
 
 	// Test various sizes
 	sizes := []fyne.Size{

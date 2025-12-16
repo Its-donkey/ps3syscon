@@ -1,16 +1,18 @@
+// Package main provides command definitions for PS3 Syscon UART communication.
 package main
 
 import "strings"
 
-// Command represents a Mullion external command.
+// Command represents a PS3 Syscon command with optional subcommands.
 type Command struct {
-	Name        string
-	Subcommands []string
-	Description string
-	Permission  uint32
+	Name        string   // Command name
+	Subcommands []string // Optional subcommands
+	Description string   // Human-readable description
+	Permission  uint32   // Permission flags required for command
 }
 
 // MullionCommands contains all known Mullion (CXR) external commands.
+// These commands are available via UART at 57600 baud.
 var MullionCommands = []Command{
 	{Name: "AUTH1", Subcommands: nil, Permission: 0x0000C0EF},
 	{Name: "AUTH2", Subcommands: nil, Permission: 0x0000C0EF},
@@ -44,7 +46,8 @@ var MullionCommands = []Command{
 	{Name: "WBE", Subcommands: nil, Permission: 0x0000C0D5},
 }
 
-// CXRFCommands contains all known CXRF internal commands.
+// CXRFCommands contains all known CXRF internal (DIAG mode) commands.
+// These commands are available via UART at 115200 baud with DIAG pin grounded.
 var CXRFCommands = []Command{
 	{Name: "becount", Subcommands: nil, Description: "Display bringup/shutdown count + Power-on time"},
 	{Name: "bepgoff", Subcommands: nil, Description: "BE power grid off"},
