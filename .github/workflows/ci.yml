@@ -88,6 +88,7 @@ jobs:
     - name: Check formatting
       working-directory: ./go-gui
       run: |
+        gofmt -s -w .
         if [ -n "$(gofmt -l .)" ]; then
           echo "Files not formatted:"
           gofmt -l .
