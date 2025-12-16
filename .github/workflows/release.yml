@@ -9,9 +9,8 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  build-windows:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
 
@@ -20,21 +19,86 @@ jobs:
       with:
         go-version: '1.21'
 
-    - name: Install Linux dependencies
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc libgl1-mesa-dev xorg-dev gcc-mingw-w64-x86-64
+
+    - name: Build Windows
+      working-directory: ./go-gui
+      run: CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc GOOS=windows GOARCH=amd64 go build -ldflags="-H windowsgui" -o ../ps3syscon-win.exe .
+
+    - name: Upload Windows artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-binary
+        path: ps3syscon-win.exe
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.21'
+
+    - name: Build macOS
+      working-directory: ./go-gui
+      run: CGO_ENABLED=1 go build -o ../ps3syscon-macos .
+
+    - name: Upload macOS artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-binary
+        path: ps3syscon-macos
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.21'
+
+    - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y gcc libgl1-mesa-dev xorg-dev
-
-    - name: Install Windows cross-compiler
-      run: sudo apt-get install -y gcc-mingw-w64-x86-64
 
     - name: Build Linux
       working-directory: ./go-gui
       run: CGO_ENABLED=1 go build -o ../ps3syscon-linux .
 
-    - name: Build Windows
-      working-directory: ./go-gui
-      run: CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc GOOS=windows GOARCH=amd64 go build -ldflags="-H windowsgui" -o ../ps3syscon-win.exe .
+    - name: Upload Linux artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: linux-binary
+        path: ps3syscon-linux
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [build-windows, build-macos, build-linux]
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download Windows binary
+      uses: actions/download-artifact@v4
+      with:
+        name: windows-binary
+
+    - name: Download macOS binary
+      uses: actions/download-artifact@v4
+      with:
+        name: macos-binary
+
+    - name: Download Linux binary
+      uses: actions/download-artifact@v4
+      with:
+        name: linux-binary
 
     - name: Get version
       id: version
@@ -47,15 +111,16 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          ps3syscon-linux
           ps3syscon-win.exe
+          ps3syscon-macos
+          ps3syscon-linux
         body: |
           ## PS3 Syscon UART Tool ${{ steps.version.outputs.VERSION }}
 
           ### Downloads
           - **Windows**: `ps3syscon-win.exe` - Double-click to run
+          - **macOS**: `ps3syscon-macos` - Run `chmod +x ps3syscon-macos && ./ps3syscon-macos`
           - **Linux**: `ps3syscon-linux` - Run `chmod +x ps3syscon-linux && ./ps3syscon-linux`
-          - **macOS**: Build from source (see README)
 
           ### Changes
           See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details.

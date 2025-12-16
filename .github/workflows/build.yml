@@ -1,0 +1,94 @@
+name: Build Binaries
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'go-gui/**'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.21'
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc libgl1-mesa-dev xorg-dev gcc-mingw-w64-x86-64
+
+    - name: Build Windows
+      working-directory: ./go-gui
+      run: CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc GOOS=windows GOARCH=amd64 go build -ldflags="-H windowsgui" -o ../ps3syscon-win.exe .
+
+    - name: Upload Windows artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-binary
+        path: ps3syscon-win.exe
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.21'
+
+    - name: Build macOS
+      working-directory: ./go-gui
+      run: CGO_ENABLED=1 go build -o ../ps3syscon-macos .
+
+    - name: Upload macOS artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-binary
+        path: ps3syscon-macos
+
+  commit-binaries:
+    runs-on: ubuntu-latest
+    needs: [build-windows, build-macos]
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Download Windows binary
+      uses: actions/download-artifact@v4
+      with:
+        name: windows-binary
+
+    - name: Download macOS binary
+      uses: actions/download-artifact@v4
+      with:
+        name: macos-binary
+
+    - name: Check for changes
+      id: check
+      run: |
+        if git diff --quiet ps3syscon-win.exe ps3syscon-macos 2>/dev/null; then
+          echo "changed=false" >> $GITHUB_OUTPUT
+        else
+          echo "changed=true" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Commit binaries
+      if: steps.check.outputs.changed == 'true'
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add ps3syscon-win.exe ps3syscon-macos
+        git commit -m "Update pre-built binaries [skip ci]" || echo "No changes to commit"
+        git push
