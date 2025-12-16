@@ -57,6 +57,58 @@ jobs:
         lipo -create -output ../ps3syscon-macos ../ps3syscon-macos-arm64 ../ps3syscon-macos-amd64
         rm ../ps3syscon-macos-arm64 ../ps3syscon-macos-amd64
 
+    - name: Import Code Signing Certificate
+      env:
+        APPLE_CERTIFICATE_P12: ${{ secrets.APPLE_CERTIFICATE_P12 }}
+        APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+      run: |
+        # Create temporary keychain
+        KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+        KEYCHAIN_PASSWORD=$(openssl rand -base64 32)
+
+        # Decode certificate
+        echo "$APPLE_CERTIFICATE_P12" | base64 --decode > $RUNNER_TEMP/certificate.p12
+
+        # Create and configure keychain
+        security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+        security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+        security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+        # Import certificate
+        security import $RUNNER_TEMP/certificate.p12 -P "$APPLE_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+        security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+        security list-keychain -d user -s $KEYCHAIN_PATH
+
+        # Clean up certificate file
+        rm $RUNNER_TEMP/certificate.p12
+
+    - name: Sign macOS Binary
+      env:
+        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      run: |
+        codesign --force --options runtime --sign "Developer ID Application: Jeffrey Bencteux ($APPLE_TEAM_ID)" ps3syscon-macos
+        # Verify signature
+        codesign --verify --verbose ps3syscon-macos
+
+    - name: Notarize macOS Binary
+      env:
+        APPLE_ID: ${{ secrets.APPLE_ID }}
+        APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      run: |
+        # Create ZIP for notarization
+        zip ps3syscon-macos.zip ps3syscon-macos
+
+        # Submit for notarization
+        xcrun notarytool submit ps3syscon-macos.zip \
+          --apple-id "$APPLE_ID" \
+          --password "$APPLE_ID_PASSWORD" \
+          --team-id "$APPLE_TEAM_ID" \
+          --wait
+
+        # Clean up zip
+        rm ps3syscon-macos.zip
+
     - name: Upload macOS artifact
       uses: actions/upload-artifact@v4
       with:
