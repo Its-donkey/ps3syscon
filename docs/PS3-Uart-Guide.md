@@ -152,8 +152,9 @@ The PS3 Syscon Tool supports three SYSCON types:
 2. Plug the USB end into your computer
 3. Launch the PS3 Syscon Tool
 4. Select your serial port from the dropdown (click Refresh if needed)
-5. Select your SC Type (CXR, CXRF, or SW)
-6. Click "Connect"
+5. Select your SC Type (CXR, CXRF, or SW) - mode switches instantly
+6. Click "Authenticate" to authenticate with the syscon
+7. Use the command dropdowns to build and send commands
 
 ### Serial Monitor
 
@@ -164,7 +165,7 @@ The tool includes a built-in serial monitor window for viewing raw UART output. 
 
 ### Authentication
 
-Many commands require authentication. Click the "Auth" button or type `AUTH` in the command field. You should see:
+Many commands require authentication. Click the "Authenticate" button. You should see:
 ```
 Auth successful
 ```
@@ -240,10 +241,12 @@ To access the full command set, you need to enable internal mode:
 ## Internal Command Mode (CXRF)
 
 ### Setup
-1. Ground the DIAG pin to GND
-2. Power on the PS3 (LED will flash red - this is normal)
-3. Select "CXRF" in the tool and connect
-4. Run `auth` to authenticate
+1. First, in CXR mode, set `EEP SET 3961 01 00` to enable internal mode
+2. Power off the PS3
+3. Ground the DIAG pin to GND
+4. Power on the PS3 (LED will flash red - this is normal)
+5. Select "CXRF" in the tool
+6. Click "Authenticate" to authenticate
 
 ### Fixing the EEPROM Checksum
 
@@ -434,7 +437,8 @@ duty setmin 0 [value]
 - Original Python scripts and research by the PS3 homebrew community
 - GUI tool development for cross-platform compatibility
 - Documentation compiled from various sources including PSX-Place and PS3 Developer Wiki
+- Special thanks to Rambonz for helping with testing
 
 ---
 
-*PS3 Syscon UART Guide V3 - Updated for the PS3 Syscon Tool GUI Application*
+*PS3 Syscon UART Guide V3.1 - Updated for PS3 Syscon Tool v1.1.0*
