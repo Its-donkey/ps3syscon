@@ -21,6 +21,7 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version: '1.21'
+        cache-dependency-path: go-gui/go.sum
 
     - name: Install dependencies
       run: |
@@ -46,6 +47,7 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version: '1.21'
+        cache-dependency-path: go-gui/go.sum
 
     - name: Build macOS
       working-directory: ./go-gui
