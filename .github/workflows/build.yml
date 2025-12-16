@@ -49,9 +49,16 @@ jobs:
         go-version: '1.21'
         cache-dependency-path: go-gui/go.sum
 
-    - name: Build macOS
+    - name: Build macOS (Universal Binary)
       working-directory: ./go-gui
-      run: CGO_ENABLED=1 go build -o ../ps3syscon-macos .
+      run: |
+        # Build for ARM64 (Apple Silicon)
+        CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -o ../ps3syscon-macos-arm64 .
+        # Build for AMD64 (Intel)
+        CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -o ../ps3syscon-macos-amd64 .
+        # Combine into universal binary
+        lipo -create -output ../ps3syscon-macos ../ps3syscon-macos-arm64 ../ps3syscon-macos-amd64
+        rm ../ps3syscon-macos-arm64 ../ps3syscon-macos-amd64
 
     - name: Upload macOS artifact
       uses: actions/upload-artifact@v4
