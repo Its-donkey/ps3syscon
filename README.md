@@ -7,10 +7,10 @@
 <p align="center">
   <strong>PS3 syscon guide and fault finding</strong>
 </p>
-
+[![CI](https://github.com/Its-donkey/ps3syscon/actions/workflows/ci.yml/badge.svg)](https://github.com/Its-donkey/ps3syscon/actions/workflows/ci.yml)
 ## Download Pre-built GUI (Recommended)
 
-Download the latest release for your platform - no Python or dependencies required:
+Download the latest release for your platform:
 
 | Platform | Download |
 |----------|----------|
